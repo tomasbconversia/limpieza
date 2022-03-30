@@ -28,8 +28,9 @@ df.show(truncate=False)
 # Remove colls with NaNs and Nulls
 def drop_nulls(df):
     null_counts = df.select([func.count(func.when(func.col(c).isNull(), c)).alias(c) for c in df.columns]).collect()[0].asDict()
-    to_drop = [k for k, v in null_counts.items() if v > 0]
-    df = df.drop(*to_drop)
+    to_drop = [k for k, v in zeros_count.items() if v > (df.count() * 0.80)]
+    for i in to_drop:
+        df = df.drop(*i)
     return df
 
 df = drop_nulls(df)
@@ -38,8 +39,10 @@ df.show()
 # Remove colls with
 def drop_empy(df):
     empty_counts = df.select([func.count(func.when(df[c] == '', c)).alias(c) for c in df.columns]).collect()[0].asDict()
-    to_drop = [k for k, v in empty_counts.items() if v > 0]
-    df = df.drop(*to_drop)
+    to_drop = [k for k, v in zeros_count.items() if v > (df.count() * 0.80)]
+    for i in to_drop:
+        if i != "test 2": # Add condition
+            df = df.drop(*i)
     return df
 
 df = drop_empy(df)
